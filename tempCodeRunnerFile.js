@@ -1,1 +1,1 @@
-arr[i][j]
+console.table(this.matrix);
