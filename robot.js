@@ -4,21 +4,23 @@ class Robot {
     matrix = null;
     robotMap = null;
     obstaclePercentage = null;
-    repeatedLocations = [[7, 5], [9, 9]];
-    robotOrientation = 0;
+    repeatedLocations = [[7, 4], [9, 9]];
+    robotOrientation = 315;
 
     constructor(matrixWidth, matrixHeight, obstaclePercentage){
         this.matrixWidth = matrixWidth;
         this.matrixHeight = matrixHeight;
         this.obstaclePercentage = obstaclePercentage;
         /* matrix initialization with desired dimensions and initial values */
-        this.matrix = Array(matrixHeight).fill(null).map(() => Array(matrixWidth).fill(2)); 
+        this.matrix = Array(matrixHeight).fill(null).map(() => Array(matrixWidth).fill(1)); 
         this.matrix[9][9] = 'D' /* initializing destination */
-        this.robotMap = this.matrix.map(a => a.slice())
+        //this.robotMap = this.matrix.map(a => a.slice())
+        this.robotMap = Array(matrixHeight).fill(null).map(() => Array(matrixWidth).fill(2)); 
+        this.robotMap[9][9] = 'D' /* initializing destination */
         this.generateObstacles(obstaclePercentage);
         this.robotMap[7][4] = "S" /* initializing robot */
-        //console.table(this.matrix);
-        console.table(this.robotMap);
+        console.table(this.matrix);
+        // console.table(this.robotMap);
     }
 
     generateObstacles(obstaclePercentage){
@@ -66,35 +68,331 @@ class Robot {
     }
 
     useSonar() {
-        var view = this.getRobotLocation() 
+        var view = this.getRobotLocation();
+        var view1 = this.getRobotLocation();
+        var view2= this.getRobotLocation();
         /* variable to getting robot's current 
         location and then checking different ones */
 
         switch(this.robotOrientation){
             case 0:
-                console.log(this.robotMap[view[0]][view[1]]);
-                while(this.robotMap[view[0]][view[1]] != 0)
+                /* check for 0 direction */
+                while(this.matrix[view[0]][view[1]] != 0 && view[0] > 0) {
+                    // console.log(view[0]) 
+                    if(this.matrix[view[0] - 1][view[1]] == 0){
+                        console.log("OBSTACLE ON '0'-->", [view[0] - 1], [view[1]])
+                        this.robotMap[view[0] - 1][view[1]] = 0;
+                    }
+                    else {
+                        this.robotMap[view[0] - 1][view[1]] = 1;
+                    }
+                    view[0] = view[0] - 1;
+                }
+                /* checking for 315 degree */
+                while(this.matrix[view1[0]][view1[1]] != 0 && view1[0] > 0 && view1[1] > 0) {
+                    // console.log(view1[0]) 
+                    if(this.matrix[view1[0] - 1][view1[1] - 1] == 0){
+                        console.log("OBSTACLE ON '315'-->", [view1[0] - 1], [view1[1] - 1])
+                        this.robotMap[view1[0] - 1][view1[1] - 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view1[0] - 1][view1[1] - 1] = 1;
+                    }
+                    view1[0] = view1[0] - 1;
+                    view1[1] = view1[1] - 1;
+                }
+                /* checking for 45 degree */
+                while(this.matrix[view2[0]][view2[1]] != 0 && view2[0] > 0 && view2[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view2[0] - 1][view2[1] + 1] == 0){
+                        console.log("OBSTACLE ON '45'-->", [view2[0] - 1], [view2[1] + 1])
+                        this.robotMap[view2[0] - 1][view2[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view2[0] - 1][view2[1] + 1] = 1;
+                    }
+                    view2[0] = view2[0] - 1;
+                    view2[1] = view2[1] + 1;
+                }
+                /* have to implement sonar system, currently issue with while loop running before seeing obstacle
+                one possible solution is to check extra block on each iteration, like check robot[0] - 1 if going north
+                that way we can detect obstacle before we hit it */
                 break;
             case 45:
-                this.robotMap[robotLocation[0] - 1][robotLocation[1] + 1] = 'S';
+                /* checking for 45 degree */
+                while(this.matrix[view2[0]][view2[1]] != 0 && view2[0] > 0 && view2[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view2[0] - 1][view2[1] + 1] == 0){
+                        console.log("OBSTACLE ON '45'-->", [view2[0] - 1], [view2[1] + 1])
+                        this.robotMap[view2[0] - 1][view2[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view2[0] - 1][view2[1] + 1] = 1;
+                    }
+                    view2[0] = view2[0] - 1;
+                    view2[1] = view2[1] + 1;
+                }
+                /* check for 0 direction */
+                while(this.matrix[view[0]][view[1]] != 0 && view[0] > 0) {
+                    // console.log(view[0]) 
+                    if(this.matrix[view[0] - 1][view[1]] == 0){
+                        console.log("OBSTACLE ON '0'-->", [view[0] - 1], [view[1]])
+                        this.robotMap[view[0] - 1][view[1]] = 0;
+                    }
+                    else {
+                        this.robotMap[view[0] - 1][view[1]] = 1;
+                    }
+                    view[0] = view[0] - 1;
+                }
+                /* checking for 90 degree */
+                while(this.matrix[view1[0]][view1[1]] != 0 && view1[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view1[0]][view1[1] + 1] == 0){
+                        console.log("OBSTACLE ON '90'-->", [view1[0]], [view1[1] + 1])
+                        this.robotMap[view1[0]][view1[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view1[0]][view1[1] + 1] = 1;
+                    }
+                    view1[1] = view1[1] + 1;
+                }
                 break;
             case 90:
-                this.robotMap[robotLocation[0]][robotLocation[1] + 1] = 'S';
+                /* checking for 90 degree */
+                while(this.matrix[view1[0]][view1[1]] != 0 && view1[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view1[0]][view1[1] + 1] == 0){
+                        console.log("OBSTACLE ON '90'-->", [view1[0]], [view1[1] + 1])
+                        this.robotMap[view1[0]][view1[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view1[0]][view1[1] + 1] = 1;
+                    }
+                    view1[1] = view1[1] + 1;
+                }
+                /* checking for 45 degree */
+                while(this.matrix[view2[0]][view2[1]] != 0 && view2[0] > 0 && view2[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view2[0] - 1][view2[1] + 1] == 0){
+                        console.log("OBSTACLE ON '45'-->", [view2[0] - 1], [view2[1] + 1])
+                        this.robotMap[view2[0] - 1][view2[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view2[0] - 1][view2[1] + 1] = 1;
+                    }
+                    view2[0] = view2[0] - 1;
+                    view2[1] = view2[1] + 1;
+                }
+                /* checking for 135 degree */
+                while(this.matrix[view[0]][view[1]] != 0 && view[0] < this.matrixHeight - 1 && view[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view[0] + 1][view[1] + 1] == 0){
+                        console.log("OBSTACLE ON '135'-->", [view[0] + 1], [view[1] + 1])
+                        this.robotMap[view[0] + 1][view[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view[0] + 1][view[1] + 1] = 1;
+                    }
+                    view[0] = view[0] + 1;
+                    view[1] = view[1] + 1;
+                }
                 break;
             case 135:
-                this.robotMap[robotLocation[0] + 1][robotLocation[1] + 1] = 'S';
+                /* checking for 135 degree */
+                while(this.matrix[view[0]][view[1]] != 0 && view[0] < this.matrixHeight - 1 && view[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view[0] + 1][view[1] + 1] == 0){
+                        console.log("OBSTACLE ON '135'-->", [view[0] + 1], [view[1] + 1])
+                        this.robotMap[view[0] + 1][view[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view[0] + 1][view[1] + 1] = 1;
+                    }
+                    view[0] = view[0] + 1;
+                    view[1] = view[1] + 1;
+                }
+                /* checking for 90 degree */
+                while(this.matrix[view1[0]][view1[1]] != 0 && view1[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view1[0]][view1[1] + 1] == 0){
+                        console.log("OBSTACLE ON '90'-->", [view1[0]], [view1[1] + 1])
+                        this.robotMap[view1[0]][view1[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view1[0]][view1[1] + 1] = 1;
+                    }
+                    view1[1] = view1[1] + 1;
+                }
+                 /* checking for 180 degree */
+                 while(this.matrix[view2[0]][view2[1]] != 0 && view2[0] < this.matrixHeight - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view2[0] + 1][view2[1]] == 0){
+                        console.log("OBSTACLE ON '180'-->", [view2[0] + 1], [view2[1]])
+                        this.robotMap[view2[0] + 1][view2[1]] = 0;
+                    }
+                    else {
+                        this.robotMap[view2[0] + 1][view2[1]] = 1;
+                    }
+                    view2[0] = view2[0] + 1;
+                }
                 break;
             case 180:
-                this.robotMap[robotLocation[0] + 1][robotLocation[1]] = 'S';
+                 /* checking for 180 degree */
+                 while(this.matrix[view2[0]][view2[1]] != 0 && view2[0] < this.matrixHeight - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view2[0] + 1][view2[1]] == 0){
+                        console.log("OBSTACLE ON '180'-->", [view2[0] + 1], [view2[1]])
+                        this.robotMap[view2[0] + 1][view2[1]] = 0;
+                    }
+                    else {
+                        this.robotMap[view2[0] + 1][view2[1]] = 1;
+                    }
+                    view2[0] = view2[0] + 1;
+                }
+                /* checking for 135 degree */
+                while(this.matrix[view[0]][view[1]] != 0 && view[0] < this.matrixHeight - 1 && view[1] < this.matrixWidth - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view[0] + 1][view[1] + 1] == 0){
+                        console.log("OBSTACLE ON '135'-->", [view[0] + 1], [view[1] + 1])
+                        this.robotMap[view[0] + 1][view[1] + 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view[0] + 1][view[1] + 1] = 1;
+                    }
+                    view[0] = view[0] + 1;
+                    view[1] = view[1] + 1;
+                }
+               /* checking for 225 degree */
+               while(this.matrix[view1[0]][view1[1]] != 0 && view1[0] < this.matrixHeight - 1 && view1[1] > 0) {
+                // console.log(view2[0]) 
+                if(this.matrix[view1[0] + 1][view1[1] - 1] == 0){
+                    console.log("OBSTACLE ON '225'-->", [view1[0] + 1], [view1[1] - 1])
+                    this.robotMap[view1[0] + 1][view1[1] - 1] = 0;
+                }
+                else {
+                    this.robotMap[view1[0] + 1][view1[1] - 1] = 1;
+                }
+                view1[0] = view1[0] + 1;
+                view1[1] = view1[1] - 1;
+            }
                 break;
             case 225:
-                this.robotMap[robotLocation[0] + 1][robotLocation[1] -1] = 'S';
+                /* checking for 225 degree */
+               while(this.matrix[view1[0]][view1[1]] != 0 && view1[0] < this.matrixHeight - 1 && view1[1] > 0) {
+                // console.log(view2[0]) 
+                if(this.matrix[view1[0] + 1][view1[1] - 1] == 0){
+                    console.log("OBSTACLE ON '225'-->", [view1[0] + 1], [view1[1] - 1])
+                    this.robotMap[view1[0] + 1][view1[1] - 1] = 0;
+                }
+                else {
+                    this.robotMap[view1[0] + 1][view1[1] - 1] = 1;
+                }
+                view1[0] = view1[0] + 1;
+                view1[1] = view1[1] - 1;
+                }
+                /* checking for 180 degree */
+                while(this.matrix[view2[0]][view2[1]] != 0 && view2[0] < this.matrixHeight - 1) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view2[0] + 1][view2[1]] == 0){
+                        console.log("OBSTACLE ON '180'-->", [view2[0] + 1], [view2[1]])
+                        this.robotMap[view2[0] + 1][view2[1]] = 0;
+                    }
+                    else {
+                        this.robotMap[view2[0] + 1][view2[1]] = 1;
+                    }
+                    view2[0] = view2[0] + 1;
+                }
+                /* checking for 270 degree */
+                while(this.matrix[view[0]][view[1]] != 0 && view[1] > 0) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view[0]][view[1] - 1] == 0){
+                        console.log("OBSTACLE ON '270'-->", [view[0]], [view[1] - 1])
+                        this.robotMap[view[0]][view[1] - 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view[0]][view[1] - 1] = 1;
+                    }
+                    view[1] = view[1] - 1;
+                }
                 break;
             case 270:
-                this.robotMap[robotLocation[0]][robotLocation[1] - 1] = 'S';
+                /* checking for 270 degree */
+                while(this.matrix[view[0]][view[1]] != 0 && view[1] > 0) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view[0]][view[1] - 1] == 0){
+                        console.log("OBSTACLE ON '270'-->", [view[0]], [view[1] - 1])
+                        this.robotMap[view[0]][view[1] - 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view[0]][view[1] - 1] = 1;
+                    }
+                    view[1] = view[1] - 1;
+                }
+                 /* checking for 225 degree */
+                while(this.matrix[view1[0]][view1[1]] != 0 && view1[0] < this.matrixHeight - 1 && view1[1] > 0) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view1[0] + 1][view1[1] - 1] == 0){
+                        console.log("OBSTACLE ON '225'-->", [view1[0] + 1], [view1[1] - 1])
+                        this.robotMap[view1[0] + 1][view1[1] - 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view1[0] + 1][view1[1] - 1] = 1;
+                    }
+                    view1[0] = view1[0] + 1;
+                    view1[1] = view1[1] - 1;
+                }
+                 /* checking for 315 degree */
+                while(this.matrix[view2[0]][view2[1]] != 0 && view2[0] > 0 && view2[1] > 0) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view2[0] - 1][view2[1] - 1] == 0){
+                        console.log("OBSTACLE ON '315'-->", [view2[0] - 1], [view2[1] - 1])
+                        this.robotMap[view2[0] - 1][view2[1] - 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view2[0] - 1][view2[1] - 1] = 1;
+                    }
+                    view2[0] = view2[0] - 1;
+                    view2[1] = view2[1] - 1;
+                }
                 break;
             case 315:
-                this.robotMap[robotLocation[0] - 1][robotLocation[1] - 1] = 'S';
+                /* checking for 315 degree */
+                while(this.matrix[view2[0]][view2[1]] != 0 && view2[0] > 0 && view2[1] > 0) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view2[0] - 1][view2[1] - 1] == 0){
+                        console.log("OBSTACLE ON '315'-->", [view2[0] - 1], [view2[1] - 1])
+                        this.robotMap[view2[0] - 1][view2[1] - 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view2[0] - 1][view2[1] - 1] = 1;
+                    }
+                    view2[0] = view2[0] - 1;
+                    view2[1] = view2[1] - 1;
+                }
+                /* checking for 270 degree */
+                while(this.matrix[view[0]][view[1]] != 0 && view[1] > 0) {
+                    // console.log(view2[0]) 
+                    if(this.matrix[view[0]][view[1] - 1] == 0){
+                        console.log("OBSTACLE ON '270'-->", [view[0]], [view[1] - 1])
+                        this.robotMap[view[0]][view[1] - 1] = 0;
+                    }
+                    else {
+                        this.robotMap[view[0]][view[1] - 1] = 1;
+                    }
+                    view[1] = view[1] - 1;
+                }
+                /* check for 0 direction */
+                while(this.matrix[view1[0]][view1[1]] != 0 && view1[0] > 0) {
+                    // console.log(view[0]) 
+                    if(this.matrix[view1[0] - 1][view1[1]] == 0){
+                        console.log("OBSTACLE ON '0'-->", [view1[0] - 1], [view1[1]])
+                        this.robotMap[view1[0] - 1][view1[1]] = 0;
+                    }
+                    else {
+                        this.robotMap[view1[0] - 1][view1[1]] = 1;
+                    }
+                    view1[0] = view1[0] - 1;
+                }
                 break;
         }
     }
@@ -134,6 +432,7 @@ class Robot {
 
     start() {
         this.useSonar()
+        console.table(this.robotMap);
     }
     out() {
         // console.table(this.matrix);
