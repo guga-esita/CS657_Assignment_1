@@ -1,0 +1,6 @@
+move count for 10% obstacles  44
+move count for 20% obstacles  303
+move count for 45% obstacles  389
+success for 10 % obstacles  true
+success for 20 % obstacles  false
+success for 45 % obstacles  false

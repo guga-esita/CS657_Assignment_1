@@ -1,6 +1,14 @@
-   isThereObstacle(x, y){
-        if(this.matrix[x][y] == 0) {
-            return true;
+this.useSonar();
+        if(this.isThereAWay()){
+            this.goForward();
         }
-        return false;
-    }
+        this.useSonar();
+        if(this.isThereAWay()){
+            this.goForward();
+        }
+        this.useSonar();
+        if(this.isThereAWay()){
+            this.goForward();
+        }
+        this.useSonar();
+        console.table(this.robotMap)
